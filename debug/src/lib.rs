@@ -3,9 +3,8 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
 use std::collections::HashSet;
 use syn::{
-    parse_quote, parse_str, AngleBracketedGenericArguments, Error, Fields, FieldsNamed,
-    GenericArgument, ItemStruct, Meta, MetaList, MetaNameValue, NestedMeta, PathArguments,
-    PathSegment, Type, TypePath,
+    AngleBracketedGenericArguments, Error, Fields, FieldsNamed, GenericArgument, ItemStruct, Meta,
+    MetaList, MetaNameValue, NestedMeta, PathArguments, PathSegment, Type, TypePath,
 };
 
 #[proc_macro_derive(CustomDebug, attributes(debug))]
@@ -84,7 +83,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
                                     // Add trait bound to the associated type.
                                     where_clause
                                         .predicates
-                                        .push(parse_quote!(#path: std::fmt::Debug));
+                                        .push(syn::parse_quote!(#path: std::fmt::Debug));
                                 }
                             }
                         }
@@ -120,12 +119,12 @@ pub fn derive(input: TokenStream) -> TokenStream {
             where_clause.predicates.clear();
             where_clause
                 .predicates
-                .push(parse_str(&bound_attr).expect("Value should be a valid trait bound."));
+                .push(syn::parse_str(&bound_attr).expect("Value should be a valid trait bound."));
         } else {
             // Make sure non-phantom type params implement Debug.
             for param in generics.type_params_mut() {
                 if !unbounded_type_params.contains(&param.ident) {
-                    param.bounds.push(parse_quote!(std::fmt::Debug));
+                    param.bounds.push(syn::parse_quote!(std::fmt::Debug));
                 }
             }
         }

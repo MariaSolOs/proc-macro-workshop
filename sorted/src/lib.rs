@@ -2,7 +2,6 @@ use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::ToTokens;
 use syn::{
-    parse_macro_input,
     spanned::Spanned,
     visit_mut::{self, VisitMut},
     AttributeArgs, Error, ExprMatch, Item, ItemFn, Pat, PatIdent, PatTupleStruct,
@@ -50,8 +49,8 @@ impl VisitMut for Checker {
 
 #[proc_macro_attribute]
 pub fn sorted(args: TokenStream, input: TokenStream) -> TokenStream {
-    let _args = parse_macro_input!(args as AttributeArgs);
-    let input = parse_macro_input!(input as Item);
+    let _args = syn::parse_macro_input!(args as AttributeArgs);
+    let input = syn::parse_macro_input!(input as Item);
 
     if let Item::Enum(input) = input {
         let mut sorted = Vec::with_capacity(input.variants.len());
@@ -76,7 +75,7 @@ pub fn sorted(args: TokenStream, input: TokenStream) -> TokenStream {
 
 #[proc_macro_attribute]
 pub fn check(_args: TokenStream, input: TokenStream) -> TokenStream {
-    let mut input = parse_macro_input!(input as ItemFn);
+    let mut input = syn::parse_macro_input!(input as ItemFn);
 
     let mut checker = Checker { errors: vec![] };
     checker.visit_item_fn_mut(&mut input);

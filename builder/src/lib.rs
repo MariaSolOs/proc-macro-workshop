@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::{format_ident, quote};
+use quote::quote;
 use syn::{
     spanned::Spanned, AngleBracketedGenericArguments, Error, Expr, ExprAssign, ExprLit, ExprPath,
     FieldsNamed, GenericArgument, ItemStruct, Lit, PathArguments, Type, TypePath,
@@ -100,7 +100,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
                                 if let Expr::Lit(ExprLit { lit, .. }) = *right {
                                     if let Lit::Str(lit_str) = lit {
                                         info.builder_attr_ident =
-                                            Some(format_ident!("{}", lit_str.value()));
+                                            Some(quote::format_ident!("{}", lit_str.value()));
                                     }
                                 }
                             }
@@ -155,7 +155,7 @@ pub fn derive(input: TokenStream) -> TokenStream {
             },
         ));
 
-        let builder_ident = format_ident!("{}Builder", ident);
+        let builder_ident = quote::format_ident!("{}Builder", ident);
         let implementation = quote! {
             impl #ident {
                 pub fn builder() -> #builder_ident {
