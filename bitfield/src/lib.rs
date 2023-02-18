@@ -12,4 +12,9 @@
 // (macro, trait, struct) through the one bitfield crate.
 pub use bitfield_impl::bitfield;
 
-// TODO other things
+pub trait Specifier {
+    const BITS: usize;
+
+    fn get_data_range(data: &[u8], offset: usize) -> u64;
+    fn set_data_range(data: &mut [u8], offset: usize, value: u64);
+}
